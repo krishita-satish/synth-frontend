@@ -194,21 +194,21 @@ export default function AuditPage() {
                 title="Sales Pipeline (CSV)"
                 type="CSV"
                 description="Manual lead entry logs and CRM activity"
-                onClick={() => alert("Coming soon: Sample data download!")}
+                onClick={() => alert("Check /backend/datasets for sample files!")}
               />
               <SampleDataCard
                 icon={Database}
                 title="System Logs (TXT)"
                 type="TXT"
                 description="Server maintenance and error logs"
-                onClick={() => alert("Coming soon: Sample data download!")}
+                onClick={() => alert("Check /backend/datasets for sample files!")}
               />
               <SampleDataCard
                 icon={Sparkles}
                 title="Dummy Invoice (PNG)"
                 type="PNG"
                 description="OCR testing with service invoices"
-                onClick={() => alert("Coming soon: Sample data download!")}
+                onClick={() => alert("Upload any invoice image to test OCR.")}
               />
             </div>
           </div>
@@ -307,7 +307,7 @@ export default function AuditPage() {
                 rel="noopener noreferrer"
                 className="btn-primary bg-accentGreen hover:bg-accentGlow text-white px-6 py-3 rounded-lg font-semibold inline-flex items-center gap-2"
               >
-                <Upload size={20} />
+                <Download size={20} />
                 Download Full PDF Report
               </a>
             )}
@@ -318,10 +318,33 @@ export default function AuditPage() {
   );
 }
 
+function SampleDataCard({ icon: Icon, title, type, description, onClick }: any) {
+  return (
+    <div
+      className="glass p-5 rounded-xl border border-borderColor hover:border-accentGreen transition-all group text-left w-full cursor-default"
+    >
+      <div className="flex items-start justify-between mb-4">
+        <div className="w-10 h-10 rounded-lg bg-accentGreen/10 flex items-center justify-center text-accentGreen group-hover:bg-accentGreen group-hover:text-white transition-colors">
+          <Icon size={20} />
+        </div>
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-borderColor/50 text-secondaryText uppercase tracking-wider">
+          {type}
+        </span>
+      </div>
+      <h4 className="font-bold mb-1 group-hover:text-accentGreen transition-colors">{title}</h4>
+      <p className="text-xs text-secondaryText leading-relaxed">{description}</p>
+      <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-accentGreen">
+        <Database size={14} />
+        File ready in /datasets
+      </div>
+    </div>
+  );
+}
+
 function StepCard({ number, title, description }: { number: string; title: string; description: string }) {
   return (
-    <div className="glass p-6 rounded-xl text-center">
-      <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-gradient-to-br from-accentGreen to-accentGlow flex items-center justify-center text-white font-bold text-xl">
+    <div className="glass p-6 rounded-xl text-center border border-borderColor hover:border-borderColor/50 transition-colors">
+      <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-gradient-to-br from-accentGreen to-accentGlow flex items-center justify-center text-white font-bold text-xl shadow-[0_0_15px_rgba(16,185,129,0.3)]">
         {number}
       </div>
       <h3 className="font-semibold mb-2">{title}</h3>
