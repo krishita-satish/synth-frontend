@@ -4,11 +4,12 @@ import { useState } from 'react';
 import { ArrowRight, Upload, Sparkles, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+const API_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
 
 export default function AuditPage() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [reportData, setReportData] = useState<any>(null);
 
@@ -26,6 +27,7 @@ export default function AuditPage() {
 
     setIsUploading(true);
     setUploadStatus('idle');
+    setError(null);
 
     try {
       const formData = new FormData();
@@ -35,22 +37,30 @@ export default function AuditPage() {
         formData.append('files', file);
       });
 
-      // FIXED: Use 127.0.0.1 instead of localhost
       const response = await fetch(`${API_URL}/audit`, {
         method: 'POST',
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error('Upload failed');
+        let errorMsg = 'Upload failed';
+        try {
+          const errorData = await response.json();
+          errorMsg = errorData.detail || errorMsg;
+        } catch (e) {
+          // Fallback to text if JSON fails
+          errorMsg = await response.text() || errorMsg;
+        }
+        throw new Error(errorMsg);
       }
 
       const result = await response.json();
       setReportData(result);
       setUploadStatus('success');
 
-    } catch (error) {
-      console.error('Upload error:', error);
+    } catch (err: any) {
+      console.error('Upload error:', err);
+      setError(err.message);
       setUploadStatus('error');
     } finally {
       setIsUploading(false);
@@ -58,7 +68,7 @@ export default function AuditPage() {
   };
 
   return (
-    <main className="min-h-screen bg-primaryBg relative overflow-hidden">
+    <main className="min-h-screen bg-primaryBg relative overflow-hidden flex flex-col pt-32 pb-20">
       {/* Background effects */}
       <div className="fixed top-0 left-1/4 w-96 h-96 bg-accentGreen rounded-full opacity-10 blur-[120px] animate-glow pointer-events-none" />
       <div className="fixed top-1/3 right-1/4 w-[500px] h-[500px] bg-accentGlow rounded-full opacity-10 blur-[140px] animate-glow pointer-events-none" style={{ animationDelay: '2s' }} />
@@ -164,7 +174,7 @@ export default function AuditPage() {
                   <p className="font-semibold">Upload Failed</p>
                 </div>
                 <p className="text-sm text-secondaryText mt-2">
-                  Please make sure your backend is running at {API_URL}
+                  {error || `Please make sure your backend is running at ${API_URL}`}
                 </p>
               </div>
             )}
