@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { ArrowRight, Upload, Sparkles, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
 export default function AuditPage() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -27,14 +29,14 @@ export default function AuditPage() {
 
     try {
       const formData = new FormData();
-      
+
       // Add all files to FormData
       selectedFiles.forEach((file) => {
         formData.append('files', file);
       });
 
       // FIXED: Use 127.0.0.1 instead of localhost
-      const response = await fetch('http://127.0.0.1:8000/audit', {
+      const response = await fetch(`${API_URL}/audit`, {
         method: 'POST',
         body: formData,
       });
@@ -46,7 +48,7 @@ export default function AuditPage() {
       const result = await response.json();
       setReportData(result);
       setUploadStatus('success');
-      
+
     } catch (error) {
       console.error('Upload error:', error);
       setUploadStatus('error');
@@ -60,13 +62,13 @@ export default function AuditPage() {
       {/* Background effects */}
       <div className="fixed top-0 left-1/4 w-96 h-96 bg-accentGreen rounded-full opacity-10 blur-[120px] animate-glow pointer-events-none" />
       <div className="fixed top-1/3 right-1/4 w-[500px] h-[500px] bg-accentGlow rounded-full opacity-10 blur-[140px] animate-glow pointer-events-none" style={{ animationDelay: '2s' }} />
-      
+
       <div className="relative z-10 max-w-4xl mx-auto px-6 py-32">
         <div className="text-center mb-12">
           <Link href="/" className="inline-flex items-center gap-2 text-secondaryText hover:text-accentGreen transition-colors mb-8">
             ← Back to Home
           </Link>
-          
+
           <h1 className="text-5xl md:text-7xl font-bold font-display mb-6">
             Start Your <span className="gradient-text">Free Audit</span>
           </h1>
@@ -80,14 +82,14 @@ export default function AuditPage() {
           <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-accentGreen to-accentGlow flex items-center justify-center">
             <Upload size={48} className="text-white" />
           </div>
-          
+
           <h2 className="text-2xl font-bold mb-4">Upload Your Business Data</h2>
           <p className="text-secondaryText mb-8">
             Drop your files here or click to browse
             <br />
             <span className="text-sm">Supports: PDF, CSV, XLSX, TXT, Images, Emails</span>
           </p>
-          
+
           <div className="max-w-md mx-auto space-y-4">
             {/* File input */}
             <div className="relative">
@@ -162,7 +164,7 @@ export default function AuditPage() {
                   <p className="font-semibold">Upload Failed</p>
                 </div>
                 <p className="text-sm text-secondaryText mt-2">
-                  Please make sure your backend is running at http://127.0.0.1:8000
+                  Please make sure your backend is running at {API_URL}
                 </p>
               </div>
             )}
@@ -171,17 +173,17 @@ export default function AuditPage() {
 
         {/* How it works */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <StepCard 
+          <StepCard
             number="1"
             title="Upload Data"
             description="Share your business files securely"
           />
-          <StepCard 
+          <StepCard
             number="2"
             title="AI Analysis"
             description="Our engine processes your workflows"
           />
-          <StepCard 
+          <StepCard
             number="3"
             title="Get Report"
             description="Receive actionable insights instantly"
@@ -196,7 +198,7 @@ export default function AuditPage() {
           </h3>
           <div className="text-sm text-secondaryText space-y-2">
             <p>
-              Connected to: <code className="px-2 py-1 bg-borderColor rounded">http://127.0.0.1:8000/audit</code>
+              Connected to: <code className="px-2 py-1 bg-borderColor rounded">{API_URL}/audit</code>
             </p>
             <p className="text-xs">
               ✅ Backend is running! Upload files to test the integration.
@@ -208,7 +210,7 @@ export default function AuditPage() {
         {reportData && (
           <div className="glass p-8 rounded-2xl mt-8">
             <h3 className="text-2xl font-bold mb-6">📊 Your Audit Report</h3>
-            
+
             {/* Key Metrics */}
             {reportData.audit_results && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -257,7 +259,7 @@ export default function AuditPage() {
             {/* Download PDF button */}
             {reportData.pdf_available && (
               <a
-                href="http://127.0.0.1:8000/download-report/"
+                href={`${API_URL}/download-report/`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary bg-accentGreen hover:bg-accentGlow text-white px-6 py-3 rounded-lg font-semibold inline-flex items-center gap-2"

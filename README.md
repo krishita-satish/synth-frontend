@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Synth AI - Business Automation Platform 🚀
 
 A stunning, modern landing page for an AI-powered business automation SaaS platform. Built with Next.js 14, Tailwind CSS, and Framer Motion.
@@ -157,3 +158,7 @@ This is a template project. Feel free to fork and customize!
 ---
 
 Built with ❤️ by the Synth team
+=======
+# synth-frontend
+Frontend for Synth — AI-powered business audit &amp; automation platform.
+>>>>>>> 0e7e8f9be2e028e5e26a4b2c99b1db102505110b
