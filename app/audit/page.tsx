@@ -12,6 +12,16 @@ export default function AuditPage() {
   const [error, setError] = useState<string | null>(null);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [reportData, setReportData] = useState<any>(null);
+  const [selectedIndustry, setSelectedIndustry] = useState('general');
+
+  const industries = [
+    { id: 'general', name: 'General Business' },
+    { id: 'ecommerce', name: 'E-commerce' },
+    { id: 'sales', name: 'Sales & CRM' },
+    { id: 'hr_admin', name: 'HR & Admin' },
+    { id: 'it_helpdesk', name: 'IT Helpdesk' },
+    { id: 'customer_support', name: 'Customer Support' },
+  ];
 
   // Handle file selection
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +46,9 @@ export default function AuditPage() {
       selectedFiles.forEach((file) => {
         formData.append('files', file);
       });
+
+      // Add industry
+      formData.append('industry', selectedIndustry);
 
       const response = await fetch(`${API_URL}/audit`, {
         method: 'POST',
@@ -100,7 +113,27 @@ export default function AuditPage() {
             <span className="text-sm">Supports: PDF, CSV, XLSX, TXT, Images, Emails</span>
           </p>
 
-          <div className="max-w-md mx-auto space-y-4">
+          <div className="max-w-md mx-auto space-y-6">
+            {/* Industry selection */}
+            <div className="text-left">
+              <label htmlFor="industry-select" className="block text-sm font-semibold mb-2 text-secondaryText ml-1">
+                Select Industry for Precise Analysis
+              </label>
+              <select
+                id="industry-select"
+                value={selectedIndustry}
+                onChange={(e) => setSelectedIndustry(e.target.value)}
+                className="w-full bg-borderColor/20 border border-borderColor rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accentGreen transition-all cursor-pointer appearance-none"
+                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23a1a1aa\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.5em' }}
+              >
+                {industries.map((ind) => (
+                  <option key={ind.id} value={ind.id} className="bg-[#0a0a0b] text-white">
+                    {ind.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* File input */}
             <div className="relative">
               <input
@@ -113,44 +146,53 @@ export default function AuditPage() {
               />
               <label
                 htmlFor="file-upload"
-                className="block w-full btn-primary bg-borderColor/30 hover:bg-borderColor/50 text-white px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 cursor-pointer transition-all border border-borderColor hover:border-accentGreen"
+                className="block w-full btn-secondary bg-borderColor/20 hover:bg-borderColor/40 text-white px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 cursor-pointer transition-all border border-borderColor hover:border-accentGreen/50 group"
               >
-                <Upload size={20} />
-                Choose Files
+                <div className="w-8 h-8 rounded-lg bg-accentGreen/10 flex items-center justify-center text-accentGreen group-hover:bg-accentGreen group-hover:text-white transition-colors">
+                  <Upload size={18} />
+                </div>
+                {selectedFiles.length > 0 ? `${selectedFiles.length} Files Selected` : 'Choose Files'}
               </label>
             </div>
 
             {/* Selected files display */}
-            {selectedFiles.length > 0 && (
-              <div className="glass p-4 rounded-lg text-left">
-                <p className="text-sm font-semibold mb-2">Selected Files:</p>
-                <ul className="text-sm text-secondaryText space-y-1">
-                  {selectedFiles.map((file, index) => (
-                    <li key={index} className="flex items-center gap-2">
-                      <CheckCircle size={16} className="text-accentGreen" />
-                      {file.name}
-                    </li>
-                  ))}
-                </ul>
+            {selectedFiles.length > 0 && uploadStatus !== 'success' && (
+              <div className="text-left bg-accentGreen/5 p-4 rounded-xl border border-accentGreen/20 animate-in fade-in slide-in-from-top-2 duration-300">
+                <p className="text-xs font-bold uppercase tracking-wider text-accentGreen mb-3 flex items-center gap-2">
+                  <FileText size={14} />
+                  Selected for Audit
+                </p>
+                <div className="max-h-32 overflow-y-auto custom-scrollbar">
+                  <ul className="text-sm text-secondaryText space-y-2">
+                    {selectedFiles.map((file, index) => (
+                      <li key={index} className="flex items-center justify-between group">
+                        <span className="truncate flex-1">{file.name}</span>
+                        <span className="text-[10px] bg-borderColor/30 px-2 py-0.5 rounded ml-2 shrink-0">
+                          {(file.size / 1024).toFixed(0)} KB
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             )}
 
             {/* Upload button */}
-            {selectedFiles.length > 0 && (
+            {selectedFiles.length > 0 && uploadStatus !== 'success' && (
               <button
                 onClick={handleUpload}
                 disabled={isUploading}
-                className="w-full btn-primary bg-accentGreen hover:bg-accentGlow text-white px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-accentGreen to-accentGlow hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 {isUploading ? (
                   <>
-                    <Loader2 size={20} className="animate-spin" />
-                    Analyzing...
+                    <Loader2 size={22} className="animate-spin" />
+                    Analyzing Infrastructure...
                   </>
                 ) : (
                   <>
-                    <Sparkles size={20} />
-                    Start AI Analysis
+                    <Sparkles size={22} />
+                    Generate AI Audit Report
                   </>
                 )}
               </button>
