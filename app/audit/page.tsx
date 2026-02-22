@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowRight, Upload, Sparkles, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { ArrowRight, Upload, Sparkles, CheckCircle, AlertCircle, Loader2, FileText, Download, Database } from 'lucide-react';
 import Link from 'next/link';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
@@ -180,6 +180,39 @@ export default function AuditPage() {
             )}
           </div>
         </div>
+
+        {/* Sample Data Section */}
+        {!reportData && (
+          <div className="mb-12 animate-slide-up-fade" style={{ animationDelay: '0.3s' }}>
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <Database size={20} className="text-accentGreen" />
+              Not sure what to upload? Try our sample data:
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <SampleDataCard
+                icon={FileText}
+                title="Sales Pipeline (CSV)"
+                type="CSV"
+                description="Manual lead entry logs and CRM activity"
+                onClick={() => alert("Coming soon: Sample data download!")}
+              />
+              <SampleDataCard
+                icon={Database}
+                title="System Logs (TXT)"
+                type="TXT"
+                description="Server maintenance and error logs"
+                onClick={() => alert("Coming soon: Sample data download!")}
+              />
+              <SampleDataCard
+                icon={Sparkles}
+                title="Dummy Invoice (PNG)"
+                type="PNG"
+                description="OCR testing with service invoices"
+                onClick={() => alert("Coming soon: Sample data download!")}
+              />
+            </div>
+          </div>
+        )}
 
         {/* How it works */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">

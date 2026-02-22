@@ -1,9 +1,23 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MessageSquare, Phone } from 'lucide-react';
 
 export default function Contact() {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('loading');
+
+    // Simulate API call
+    setTimeout(() => {
+      setStatus('success');
+      setTimeout(() => setStatus('idle'), 5000);
+    }, 1500);
+  };
+
   return (
     <section id="contact" className="py-32 relative">
       <div className="max-w-7xl mx-auto px-6">
@@ -34,7 +48,7 @@ export default function Contact() {
             <div>
               <h3 className="text-2xl font-bold mb-6">Let's Talk</h3>
               <p className="text-secondaryText leading-relaxed mb-8">
-                Whether you're curious about our AI audit, need help with implementation, 
+                Whether you're curious about our AI audit, need help with implementation,
                 or just want to explore how automation can transform your business, we're here to help.
               </p>
             </div>
@@ -46,14 +60,12 @@ export default function Contact() {
                 value="gopeshvijayabhaskar@gmail.com"
                 link="mailto:gopeshvijayabhaskar@gmail.com"
               />
-              {/* FIRST PHONE NUMBER */}
               <ContactMethod
                 icon={Phone}
                 title="Call Us (Primary)"
                 value="+91 8056266671"
                 link="tel:+918056266671"
               />
-              {/* SECOND PHONE NUMBER */}
               <ContactMethod
                 icon={Phone}
                 title="Call Us (Secondary)"
@@ -75,48 +87,76 @@ export default function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="glass p-8 rounded-2xl"
+            className="glass p-8 rounded-2xl relative overflow-hidden"
           >
-            <form className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">Name</label>
-                <input
-                  type="text"
-                  className="w-full bg-borderColor/30 border border-borderColor rounded-lg px-4 py-3 focus:outline-none focus:border-accentGreen transition-colors"
-                  placeholder="John Doe"
-                />
+            {status === 'success' ? (
+              <div className="h-full flex flex-col items-center justify-center text-center space-y-4 animate-slide-up-fade">
+                <div className="w-16 h-16 bg-accentGreen/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", damping: 10 }}
+                  >
+                    <svg className="w-8 h-8 text-accentGreen" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </motion.div>
+                </div>
+                <h3 className="text-2xl font-bold">Message Sent!</h3>
+                <p className="text-secondaryText">Thank you for reaching out. Our team will get back to you within 24 hours.</p>
+                <button
+                  onClick={() => setStatus('idle')}
+                  className="text-accentGreen hover:underline font-medium mt-4"
+                >
+                  Send another message
+                </button>
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Email</label>
-                <input
-                  type="email"
-                  className="w-full bg-borderColor/30 border border-borderColor rounded-lg px-4 py-3 focus:outline-none focus:border-accentGreen transition-colors"
-                  placeholder="john@company.com"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Company</label>
-                <input
-                  type="text"
-                  className="w-full bg-borderColor/30 border border-borderColor rounded-lg px-4 py-3 focus:outline-none focus:border-accentGreen transition-colors"
-                  placeholder="Acme Inc"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Message</label>
-                <textarea
-                  rows={4}
-                  className="w-full bg-borderColor/30 border border-borderColor rounded-lg px-4 py-3 focus:outline-none focus:border-accentGreen transition-colors resize-none"
-                  placeholder="Tell us about your automation needs..."
-                />
-              </div>
-              <button
-                type="submit"
-                className="btn-primary w-full bg-accentGreen hover:bg-accentGlow text-white px-6 py-4 rounded-lg font-semibold"
-              >
-                Send Message
-              </button>
-            </form>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Name</label>
+                  <input
+                    required
+                    type="text"
+                    className="w-full bg-borderColor/30 border border-borderColor rounded-lg px-4 py-3 focus:outline-none focus:border-accentGreen transition-colors"
+                    placeholder="John Doe"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Email</label>
+                  <input
+                    required
+                    type="email"
+                    className="w-full bg-borderColor/30 border border-borderColor rounded-lg px-4 py-3 focus:outline-none focus:border-accentGreen transition-colors"
+                    placeholder="john@company.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Company</label>
+                  <input
+                    type="text"
+                    className="w-full bg-borderColor/30 border border-borderColor rounded-lg px-4 py-3 focus:outline-none focus:border-accentGreen transition-colors"
+                    placeholder="Acme Inc"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Message</label>
+                  <textarea
+                    required
+                    rows={4}
+                    className="w-full bg-borderColor/30 border border-borderColor rounded-lg px-4 py-3 focus:outline-none focus:border-accentGreen transition-colors resize-none"
+                    placeholder="Tell us about your automation needs..."
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="btn-primary w-full bg-accentGreen hover:bg-accentGlow text-white px-6 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {status === 'loading' ? 'Sending...' : 'Send Message'}
+                </button>
+              </form>
+            )}
           </motion.div>
         </div>
       </div>
