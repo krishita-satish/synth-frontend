@@ -36,7 +36,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-primaryBg/80 backdrop-blur-xl border-b border-borderColor' : 'bg-transparent'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-primaryBg/95 backdrop-blur-xl border-b border-borderColor' : 'bg-transparent'
         }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4">
@@ -59,13 +59,13 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="#features" className="text-secondaryText hover:text-primaryText transition-colors">
+            <Link href="/#features" className="text-secondaryText hover:text-primaryText transition-colors">
               Features
             </Link>
-            <Link href="#how-it-works" className="text-secondaryText hover:text-primaryText transition-colors">
+            <Link href="/#how-it-works" className="text-secondaryText hover:text-primaryText transition-colors">
               How it works
             </Link>
-            <Link href="#contact" className="text-secondaryText hover:text-primaryText transition-colors">
+            <Link href="/#contact" className="text-secondaryText hover:text-primaryText transition-colors">
               Contact
             </Link>
           </div>
@@ -120,11 +120,14 @@ export default function Navbar() {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 pb-6 space-y-4 animate-slide-up-fade border-t border-borderColor pt-6">
-            <Link href="#features" className="block text-secondaryText px-4" onClick={() => setIsMobileMenuOpen(false)}>
+            <Link href="/#features" className="block text-secondaryText px-4" onClick={() => setIsMobileMenuOpen(false)}>
               Features
             </Link>
-            <Link href="#how-it-works" className="block text-secondaryText px-4" onClick={() => setIsMobileMenuOpen(false)}>
+            <Link href="/#how-it-works" className="block text-secondaryText px-4" onClick={() => setIsMobileMenuOpen(false)}>
               How it works
+            </Link>
+            <Link href="/#contact" className="block text-secondaryText px-4" onClick={() => setIsMobileMenuOpen(false)}>
+              Contact
             </Link>
             <Link href="/audit" className="block text-secondaryText px-4" onClick={() => setIsMobileMenuOpen(false)}>
               Audit
